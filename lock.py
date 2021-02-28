@@ -18,3 +18,23 @@ class Lock:
 
     def get_status(self) -> bool:
         return self._enable
+
+    def enable(self, pin: int):
+        if self._enable == True:
+            print('lock already on')
+        else:
+            if pin == self.get_pin():
+                print('pins match')
+                self._enable = True
+            else:
+                print('incorrect pin')
+    
+    def disable(self, pin: int):
+        if self._enable == False:
+            print('lock already disabled')
+        else:
+            if pin == self.get_pin():
+                print('pins match')
+                self._enable = False
+            else:
+                print('incorrect pin')
