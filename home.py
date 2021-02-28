@@ -19,14 +19,18 @@ class Home(object):
     def get_light_color(self, name: str):
         for light in self._lights:
             if light._name == name:
-                light.get_color()
+                return light.get_color()
 
     def set_light_color(self, name: str, r: int, g: int, b: int):
         for light in self._lights:
             if light._name == name:
                 light.set_color(r, g, b)
 
-#    def get_light_status(self, name: str):
+    def get_light_status(self, name: str):
+        for light in self._lights:
+            if light._name == name:
+                return light.get_status()  
+    
 
     
 #    def enable_light(self, name: str):

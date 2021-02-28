@@ -47,14 +47,12 @@ h0.add_light('Bedroom')
 h0.add_light('Living Room')
 h0.print_lights()
 
-col = h0.get_light_color('Bedroom')
-print(col)
-
 h0.set_light_color('Bedroom', 160, 255, 43)
 col = h0.get_light_color('Bedroom')
 print(col)
 
-h0.print_lights()
+status = h0.get_light_status('Bedroom')
+print(status)
 
 
 # Testing locks
