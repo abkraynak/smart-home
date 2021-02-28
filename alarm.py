@@ -7,4 +7,17 @@ class Alarm:
         return self._pin
 
     def set_pin(self, pin: int):
-        self._pin = pin 
+        self._pin = pin
+
+    def get_status(self) -> int:
+        return self._enable
+
+    def enable(self, pin: int):
+        if self._enable == True:
+            print('alarm already on')
+        else:
+            if pin == self.get_pin():
+                print('pins match')
+                self._enable = True
+            else:
+                print('incorrect pin')

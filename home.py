@@ -11,3 +11,9 @@ class Home(object):
 
     def set_alarm_pin(self, pin: int):
         self._alarm.set_pin(pin)
+
+    def get_alarm_status(self) -> int:
+        return self._alarm.get_status()
+
+    def enable_alarm(self, pin: int):
+        self._alarm.enable(pin)
