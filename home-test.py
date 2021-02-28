@@ -13,7 +13,7 @@ status = h0.get_alarm_status()
 print(status)
 
 h0.enable_alarm(1234)
-status = h0.get_alarm_status()
+status = h0._alarm.get_status()
 print(status)
 
 h0.enable_alarm(1234)
