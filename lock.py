@@ -1,3 +1,5 @@
+# lock.py
+
 class Lock:
     def __init__(self, name: str, pin: int):
         self._name = name
