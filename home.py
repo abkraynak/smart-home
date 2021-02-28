@@ -1,6 +1,7 @@
 # home.py
 
 from alarm import Alarm
+from light import Light
 from lock import Lock
 
 class Home(object):
@@ -8,6 +9,7 @@ class Home(object):
         self._firstName = firstName
         self._address = address
         self._alarm = Alarm(0)
+        self._lights = []
         self._locks = []
 
     def add_lock(self, name: str, pin: int):
