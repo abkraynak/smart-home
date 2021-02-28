@@ -29,6 +29,14 @@ status = h0._alarm.get_status()
 print(status)
 
 
+h0.print_locks()
+h0.add_lock('Front Door', 1234)
+h0.print_locks()
+h0.add_lock('Garage Door', 5678)
+h0.print_locks()
+h0.print_locks()
+
+
 h1 = Home('Brian', 'Fayetteville St')
 print(h1._firstName)
 print(h1._address)

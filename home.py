@@ -8,4 +8,10 @@ class Home(object):
         self._alarm = Alarm(0)
         self._locks = []
 
+    def add_lock(self, name: str, pin: int):
+        new_lock = Lock(name, pin)
+        self._locks.append(new_lock)
     
+    def print_locks(self):
+        for lock in self._locks:
+            print(lock._name, lock._enable, sep =' - ')
