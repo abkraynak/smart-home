@@ -13,12 +13,12 @@ class Light:
         self._name = name
 
     def get_color(self):
-        return self._colors
+        return self._color
 
     def set_color(self, red: int, green: int, blue: int):
-        self._colors['R'] = red
-        self._colors['G'] = green
-        self._colors['B'] = blue
+        self._color['R'] = red
+        self._color['G'] = green
+        self._color['B'] = blue
 
     def get_status(self) -> bool:
         return self._status
