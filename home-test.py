@@ -54,6 +54,9 @@ print(col)
 status = h0.get_light_status('Bedroom')
 print(status)
 
+h0.enable_light('Bedroom')
+h0.print_lights()
+
 
 # Testing locks
 h0.print_locks()

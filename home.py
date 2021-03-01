@@ -31,13 +31,15 @@ class Home(object):
             if light._name == name:
                 return light.get_status()  
     
-
+    def enable_light(self, name: str):
+        for light in self._lights:
+            if light._name == name:
+                light.enable()
     
-#    def enable_light(self, name: str):
-
-    
- #   def disable_light(self, name: str):
-
+    def disable_light(self, name: str):
+        for light in self._lights:
+            if light._name == name:
+                light.disable()
 
     def print_lights(self):
         for light in self._lights:
