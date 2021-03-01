@@ -49,6 +49,21 @@ class Home(object):
         new_lock = Lock(name, pin)
         self._locks.append(new_lock)
 
+    def get_lock_status(self, name: str):
+        for lock in self._locks:
+            if lock._name == name:
+                return lock.get_status()
+
+    def enable_lock(self, name: str, pin: int):
+        for lock in self._locks:
+            if lock._name == name:
+                lock.enable(pin)
+
+    def disable_lock(self, name: str, pin: int):
+        for lock in self._locks:
+            if lock._name == name:
+                lock.disable(pin)
+
     def print_locks(self):
         for lock in self._locks:
             print(lock._name, lock._enable, sep = ' - ')
