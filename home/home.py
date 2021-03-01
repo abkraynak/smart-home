@@ -1,8 +1,8 @@
 # home.py
 
-from alarm import Alarm
-from light import Light
-from lock import Lock
+from .alarm import Alarm
+from .light import Light
+from .lock import Lock
 
 class Home(object):
     def __init__(self, firstName: str, address: str):
