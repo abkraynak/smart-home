@@ -9,7 +9,7 @@ class SHProtocol(object):
 
     def __init__(self, s: socket):
         self._sock = s
-        self._rfile = self._sock.makefile(mode='r', encooding='utf-8', newline=SHProtocol.CRLF)
+        self._rfile = self._sock.makefile(mode='r', encoding='utf-8', newline=SHProtocol.CRLF)
 
     def _receive_line(self) -> str:
         s = self._rfile.readline()

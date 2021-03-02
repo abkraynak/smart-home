@@ -21,7 +21,8 @@ class SHServer(object):
 
         # Receive username from client
         m_recv = self._shp.get_message()
-        print(m_recv)
+        print(m_recv.get_parameter('user'))
+        print('received username from client')
 
         # Send password request
         m_send = Message()
@@ -32,6 +33,7 @@ class SHServer(object):
 
         # Receive password from client
         m_recv = self._shp.get_message()
-        print(m_recv)
+        print(m_recv.get_parameter('pass'))
+        print('received password from client')
 
 

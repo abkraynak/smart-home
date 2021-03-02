@@ -4,27 +4,32 @@ import socket
 from sh_protocol import SHProtocol
 from sh_server import SHServer
     
+HOST = '127.0.0.1'
+PORT = 50001
+
 if __name__ == "__main__":
     # Create the server socket
     # Defaults family=AF_INET, type=SOCK_STREAM, proto=0, filno=None
     serversoc = socket.socket()
     
-    # Bind to local host:50000
-    serversoc.bind(("localhost",50000))
+    # Bind to local host:5000`
+    serversoc.bind((HOST, PORT))
                    
     # Make passive with backlog=5
     serversoc.listen(5)
     
     # Wait for incoming connections
     while True:
-        print("Listening on ", 50000)
+        print("Listening on ", PORT)
         
         # Accept the connection
         commsoc, raddr = serversoc.accept()
+        print('accepted connection')
         
         # Run the application protocol
         shp = SHProtocol(commsoc)
         shs = SHServer(shp)
+        print('shs.run()')
         shs.run()
         
         # Close the comm socket
