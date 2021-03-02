@@ -2,7 +2,6 @@
 
 from home import Home
 
-# Testing homes
 h0 = Home('Andrew', 'SW 12th St')
 print(h0._firstName)
 print(h0._address)

@@ -67,4 +67,3 @@ class Home(object):
     def print_locks(self):
         for lock in self._locks:
             print(lock._name, lock._enable, sep = ' - ')
-
