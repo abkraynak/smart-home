@@ -9,7 +9,9 @@ class SHServer(object):
         
     def run(self):
         # Receive the first message from client
+        print('waiting for message')
         m_recv = self._shp.get_message()
+        print('message received! it is: ')
         print(m_recv)
 
         # First message sent is username request

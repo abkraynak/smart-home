@@ -4,7 +4,7 @@ import socket
 from message import Message
 
 class SHProtocol(object):
-    CRLF = '\r\n'
+    CRLF = '\n'
     BUFSIZE = 8196
 
     def __init__(self, s: socket):
@@ -15,23 +15,24 @@ class SHProtocol(object):
         s = self._rfile.readline()
         return s
 
-    def put_message(self, message: Message):
-        data = message.marshal()
+    def put_message(self, mess: Message):
+        data = mess.marshal()
         self._sock.sendall(data.encode('utf-8'))
 
     def get_message(self) -> Message:
-        lines = []
+        m_lines = []
 
         # Get first 2 lines that contain type and parameter (lines)
-        lines.append(self._receive_line())
-        lines.append(self._receive_line())
+        m_lines.append(self._receive_line())
+        m_lines.append(self._receive_line())
+        
         m = Message()
-        m.unmarshal(''.join(lines))
-        count = int(m.getParam('lines'))
+        m.unmarshal(''.join(m_lines))
+        count = int(m.get_parameter('lines'))
 
         # Get the remaining lines of the message (body)
         for i in range(count):
-            m.addLine(self._receive_line())
+            m.add_line(self._receive_line())
 
         return m
 

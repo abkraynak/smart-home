@@ -12,7 +12,9 @@ class SHClient(object):
         # Send start message to server
         m_send = Message()
         m_send.set_type('START')
+        m_send.add_line('just a test')
         print('client made start message')
+        print(m_send)
         self._shp.put_message(m_send)
         print('client sent start message')
 
