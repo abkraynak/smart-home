@@ -1,4 +1,4 @@
-# message-test.py
+# message_test.py
 
 from message import Message
 
