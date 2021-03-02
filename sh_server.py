@@ -13,9 +13,8 @@ class SHServer(object):
 
         # First message sent is username request
         m1_send = Message()
-        m1_send.setType('USER')
-        m1_send.addParam('user', 'none')
-        m1_send.addLine('Enter username:')
+        m1_send.set_type('USER')
+        m1_send.add_parameter('user', 'none')
+        m1_send.add_line('Enter username:')
         self._shp.put_message(m1_send)
 
-        

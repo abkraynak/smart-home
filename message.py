@@ -20,9 +20,9 @@ class Message(object):
         Constructor
         '''
         self._type = Message.MCMDS.START
-        self._params = {'lines': '0'}
+        self._parameters = {'lines': '0'}
         self._body = []
-        self._bodyLines = 0
+        self._body_lines = 0
         
     def __str__(self) -> str:
         '''
@@ -30,51 +30,51 @@ class Message(object):
         '''
         return self.marshal()
     
-    def setType(self, mtype: str):
+    def set_type(self, mtype: str):
         self._type = Message.MCMDS[mtype]
         
-    def getType(self) -> str:
+    def get_type(self) -> str:
         return self._type.value()
 
-    def addParam(self, name: str, value: str):
-        self._params[name] = value
+    def add_parameter(self, name: str, value: str):
+        self._parameters[name] = value
         
-    def getParam(self, name: str) -> str:
-        return self._params[name]
+    def get_parameter(self, name: str) -> str:
+        return self._parameters[name]
     
-    def addLine(self, line: str):
+    def add_line(self, line: str):
         self._body.append(line)
-        self._bodyLines += 1
+        self._body_lines += 1
         
-    def addLines(self, lines: list):
+    def add_lines(self, lines: list):
         for line in lines:
-            self.addLine(line)
+            self.add_line(line)
             
-    def getBody(self) -> str:
+    def get_body(self) -> str:
         return Message.CRLF.join(self._body)
     
     def marshal(self) -> str:
-        self._params['lines'] = str(self._bodyLines)
+        self._parameters['lines'] = str(self._body_lines)
         
         value = [self._type.value]
-        pairs = [Message.VJOIN.format(k,v) for (k, v) in self._params.items()]
-        params = Message.PJOIN.join(pairs)
-        value.append(params)
+        pairs = [Message.VJOIN.format(k,v) for (k, v) in self._parameters.items()]
+        parameters = Message.PJOIN.join(pairs)
+        value.append(parameters)
         if len(self._body) > 0:
             value += self._body
         return Message.CRLF.join(value)
     
     def unmarshal(self, value: str):
-        self._params.clear()
+        self._parameters.clear()
         self._body.clear()
         lines = value.split(Message.CRLF)
         self._type = Message.MCMDS[lines[0]]
-        params = lines[1].split(Message.PJOIN)
-        for p in params:
+        parameters = lines[1].split(Message.PJOIN)
+        for p in parameters:
             k,v = p.split(Message.VJOIN1)
-            self._params[k] = v
+            self._parameters[k] = v
         self._body += lines[2:]
-        self._bodyLines = int(self._params['lines'])
+        self._body_lines = int(self._parameters['lines'])
             
         
         
