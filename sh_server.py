@@ -8,13 +8,30 @@ class SHServer(object):
         self._shp = s
         
     def run(self):
-        m0_recv = self._shp.get_message()
-        print(m0_recv)
+        # Receive the first message from client
+        m_recv = self._shp.get_message()
+        print(m_recv)
 
         # First message sent is username request
-        m1_send = Message()
-        m1_send.set_type('USER')
-        m1_send.add_parameter('user', 'none')
-        m1_send.add_line('Enter username:')
-        self._shp.put_message(m1_send)
+        m_send = Message()
+        m_send.set_type('USER')
+        m_send.add_parameter('user', 'none')
+        m_send.add_line('Enter username:')
+        self._shp.put_message(m_send)
+
+        # Receive username from client
+        m_recv = self._shp.get_message()
+        print(m_recv)
+
+        # Send password request
+        m_send = Message()
+        m_send.set_type('PASS')
+        m_send.add_parameter('pass', 'none')
+        m_send.add_line('Enter password: ')
+        self._shp.put_message(m_send)
+
+        # Receive password from client
+        m_recv = self._shp.get_message()
+        print(m_recv)
+
 
