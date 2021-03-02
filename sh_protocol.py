@@ -35,3 +35,5 @@ class SHProtocol(object):
 
         return m
 
+    def close(self):
+        self._sock.close()
