@@ -4,36 +4,47 @@ import socket
 from message import Message
 
 class SHProtocol(object):
-    CRLF = '\n'
+    CRLF = '\r\n'
     BUFSIZE = 8196
 
     def __init__(self, s: socket):
         self._sock = s
-        self._rfile = self._sock.makefile(mode='r', encoding='utf-8', newline=SHProtocol.CRLF)
+        self._rfile = self._sock.makefile(mode='r', encoding='utf-8', newline='\n')
 
     def _receive_line(self) -> str:
-        s = self._rfile.readline()
-        return s
+        print('receiving line')
+        line = self._rfile.readline()
+        print('line is : ', line)
+        return line
 
     def put_message(self, mess: Message):
-        data = mess.marshal()
-        self._sock.sendall(data.encode('utf-8'))
+        message_string = mess.marshal()
+        self._sock.sendall(message_string.encode('utf-8'))
 
     def get_message(self) -> Message:
-        m_lines = []
+        message_lines = []
 
         # Get first 2 lines that contain type and parameter (lines)
-        m_lines.append(self._receive_line())
-        m_lines.append(self._receive_line())
+        message_lines.append(self._receive_line())
+        message_lines.append(self._receive_line())
         
         m = Message()
-        m.unmarshal(''.join(m_lines))
-        count = int(m.get_parameter('lines'))
-
+        message_header = ''.join(message_lines)
+        m.unmarshal(message_header)
+        print(m)
+        num_lines = int(m.get_parameter('lines'))
+        print('num_lines is : ', num_lines)
+        
         # Get the remaining lines of the message (body)
-        for i in range(count):
-            m.add_line(self._receive_line())
+        counter = 0
+        while counter < num_lines:
+            body_line = self._receive_line()
+            print('line is : ', body_line)
+            m.add_line(body_line)
+            counter += 1
 
+        print('finished loop, message m is: ')
+        print(m)
         return m
 
     def close(self):

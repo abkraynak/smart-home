@@ -5,7 +5,7 @@ from sh_protocol import SHProtocol
 from sh_server import SHServer
     
 HOST = '127.0.0.1'
-PORT = 50003
+PORT = 50014
 
 if __name__ == "__main__":
     # Create the server socket
@@ -24,12 +24,10 @@ if __name__ == "__main__":
         
         # Accept the connection
         commsoc, raddr = serversoc.accept()
-        print('accepted connection')
         
         # Run the application protocol
         shp = SHProtocol(commsoc)
         shs = SHServer(shp)
-        print('running shs.run()')
         shs.run()
         
         # Close the comm socket
@@ -37,4 +35,3 @@ if __name__ == "__main__":
     
     # Close the server socket
     serversoc.close()
-    

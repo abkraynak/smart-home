@@ -15,6 +15,7 @@ if __name__ == '__main__':
     m1.add_line('3. Locks')
     m1.add_line('4. Logout')
     print(m1)
+    print(m1.get_body())
 
     m2 = Message()
     print(m2)
