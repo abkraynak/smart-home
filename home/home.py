@@ -26,6 +26,16 @@ class Home(object):
             if light._name == name:
                 light.set_color(r, g, b)
 
+    def get_light_brightness(self, name: str):
+        for light in self._lights:
+            if light._name == name:
+                return light.get_brightness()
+
+    def set_light_brightness(self, name: str, level: int):
+        for light in self._lights:
+            if light._name == name:
+                light.set_brightness(level)
+
     def get_light_status(self, name: str):
         for light in self._lights:
             if light._name == name:

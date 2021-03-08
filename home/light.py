@@ -5,6 +5,7 @@ class Light:
         self._name = name
         self._status = False
         self._color = {'R': 0, 'G': 0, 'B': 0}
+        self._brightness = 0
 
     def get_name(self) -> str:
         return self._name
@@ -20,6 +21,15 @@ class Light:
         self._color['G'] = green
         self._color['B'] = blue
 
+    def get_brightness(self):
+        return self._brightness
+
+    def set_brightness(self, level: int):
+        if level in range(100):
+            self._brightness = level
+        else:
+            print('incorrect value of brightness level')
+
     def get_status(self) -> bool:
         return self._status
 
@@ -28,9 +38,11 @@ class Light:
             print('light already on')
         else:
             self._status = True
+            self._brightness = 100
 
     def disable(self):
         if self._status == False:
             print('light already off')
         else:
             self._status = False
+            self._brightness = 0
