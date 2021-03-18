@@ -13,32 +13,38 @@ class SHProtocol(object):
 
     def _receive_line(self) -> str:
         line = self._rfile.readline()
+        if len(line) == 0:
+            raise Exception('blank line')
         return line
 
-    def put_message(self, mess: Message):
-        message_string = mess.marshal()
+    def put_message(self, m: Message):
+        message_string = m.marshal()
         self._sock.sendall(message_string.encode('utf-8'))
 
     def get_message(self) -> Message:
-        message_lines = []
+        try:
+            message_lines = []
 
-        # Get first 2 lines that contain type and parameter (lines)
-        message_lines.append(self._receive_line())
-        message_lines.append(self._receive_line())
-        
-        m = Message()
-        message_header = ''.join(message_lines)
-        m.unmarshal(message_header)
-        num_lines = int(m.get_parameter('lines'))
-        
-        # Get the remaining lines of the message (body)
-        counter = 0
-        while counter < num_lines:
-            body_line = self._receive_line()
-            m.add_line(body_line)
-            counter += 1
+            # Get first 2 lines that contain type and parameter (lines)
+            message_lines.append(self._receive_line())
+            message_lines.append(self._receive_line())
+            
+            m = Message()
+            message_header = ''.join(message_lines)
+            m.unmarshal(message_header)
+            num_lines = int(m.get_parameter('lines'))
+            
+            # Get the remaining lines of the message (body)
+            for i in range(num_lines):
+                body_line = self._receive_line()
+                m.add_line(body_line)
 
-        return m
+        except Exception:
+            raise Exception('get_message() failed')
+
+        else:
+            return m
 
     def close(self):
+        self._rfile.close()
         self._sock.close()
