@@ -9,30 +9,24 @@ class SHClient(object):
 
     def run(self):
         # Send start message to server
-        m_send0 = Message()
-        m_send0.set_type('START')
-        print('client made start message')
-        print(m_send0)
-        self._shp.put_message(m_send0)
-        print('client sent start message')
+        m_send = Message()
+        m_send.set_type('START')
+        self._shp.put_message(m_send)
 
         # Receive username request from server
-        print('waiting to receive message')
-        m_recv0 = self._shp.get_message()
-        print(m_recv0.get_body())
-        print('message received from server')
+        m_recv = self._shp.get_message()
+        print(m_recv.get_body())
 
         # Input and send username
         username = input('>> ')
-        m_send1 = Message()
-        m_send1.set_type('CHOICE')
-        m_send1.add_parameter('user', username)
-        self._shp.put_message(m_send1)
+        m_send.clear()
+        m_send.set_type('CHOICE')
+        m_send.add_parameter('user', username)
+        self._shp.put_message(m_send)
 
         # Receive password request from server
-        m_recv1 = self._shp.get_message()
-        print(m_recv1.get_body())
-        print('message received from server')
+        m_recv = self._shp.get_message()
+        print(m_recv.get_body())
 
         # Input and send password
         password = input('>>')

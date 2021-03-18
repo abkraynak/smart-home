@@ -8,11 +8,11 @@ class SHServer(object):
     def __init__(self, s: SHProtocol):
         self._shp = s
         self._login = False
+        self._home = Home()
         
     def run(self):
         # Receive the first message from client
         m_recv = self._shp.get_message()
-        print(m_recv)
 
         # First message sent is username request
         m_send = Message()
@@ -38,6 +38,9 @@ class SHServer(object):
 
         print(username)
         print(password)
+
+
+
 
 
 
