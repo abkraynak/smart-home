@@ -4,7 +4,7 @@ import socket
 from sh_protocol import SHProtocol
 from sh_server import SHServer
     
-HOST = '127.0.0.1'
+HOST = "localhost"
 PORT = 50014
 
 if __name__ == "__main__":
