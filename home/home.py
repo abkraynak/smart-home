@@ -5,9 +5,9 @@ from .light import Light
 from .lock import Lock
 
 class Home(object):
-    def __init__(self, user: str, passwd: str, first_name: str, address: str):
-        self._username = user
-        self._password = passwd
+    def __init__(self, first_name: str, address: str):
+        self._username = 'abkraynak'
+        self._password = 'mypassword'
         self._firstName = first_name
         self._address = address
         self._alarm = Alarm(0)
@@ -19,6 +19,11 @@ class Home(object):
             return True
         return False
 
+    def sample_home(self):
+        self.add_light('Kitchen')
+        self.add_light('Bedroom')
+        self.add_light('Living Room')
+    
     def add_light(self, name: str):
         new_light = Light(name)
         self._lights.append(new_light)
