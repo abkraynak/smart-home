@@ -14,6 +14,11 @@ class Home(object):
         self._lights = []
         self._locks = []
 
+    def authenticate(self, user: str, passwd: str) -> bool:
+        if user == self._username and passwd == self._password:
+            return True
+        return False
+
     def add_light(self, name: str):
         new_light = Light(name)
         self._lights.append(new_light)
