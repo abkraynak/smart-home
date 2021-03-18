@@ -13,24 +13,28 @@ class SHClient(object):
         m_send.set_type('START')
         self._shp.put_message(m_send)
 
-        # Receive username request from server
-        m_recv = self._shp.get_message()
-        print(m_recv.get_body())
+        try:
+            while True:
+                # Receive username request from server
+                m_recv = self._shp.get_message()
+                print(m_recv.get_body())
 
-        # Input and send username
-        username = input('>> ')
-        m_send.clear()
-        m_send.set_type('CHOICE')
-        m_send.add_parameter('user', username)
-        self._shp.put_message(m_send)
+                # Input and send username
+                username = input('>> ')
+                m_send.clear()
+                m_send.set_type('CHOICE')
+                m_send.add_parameter('user', username)
+                self._shp.put_message(m_send)
 
-        # Receive password request from server
-        m_recv = self._shp.get_message()
-        print(m_recv.get_body())
+                # Receive password request from server
+                m_recv = self._shp.get_message()
+                print(m_recv.get_body())
 
-        # Input and send password
-        password = input('>>')
-        m_send2 = Message()
-        m_send2.set_type('CHOICE')
-        m_send2.add_parameter('pass', password)
-        self._shp.put_message(m_send2)
+                # Input and send password
+                password = input('>>')
+                m_send2 = Message()
+                m_send2.set_type('CHOICE')
+                m_send2.add_parameter('pass', password)
+                self._shp.put_message(m_send2)
+        except Exception:
+            self._shp.close()

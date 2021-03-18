@@ -14,7 +14,7 @@ class SHProtocol(object):
     def _receive_line(self) -> str:
         line = self._rfile.readline()
         if len(line) == 0:
-            raise Exception('blank line')
+            raise Exception('blank line read')
         return line
 
     def put_message(self, m: Message):
