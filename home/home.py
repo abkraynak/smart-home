@@ -5,8 +5,10 @@ from .light import Light
 from .lock import Lock
 
 class Home(object):
-    def __init__(self, firstName: str, address: str):
-        self._firstName = firstName
+    def __init__(self, user: str, passwd: str, first_name: str, address: str):
+        self._username = user
+        self._password = passwd
+        self._firstName = first_name
         self._address = address
         self._alarm = Alarm(0)
         self._lights = []
