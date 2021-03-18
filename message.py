@@ -30,6 +30,13 @@ class Message(object):
         '''
         return self.marshal()
     
+    def clear(self):
+        self._type = Message.MCMDS.START
+        self._parameters.clear()
+        self._parameters = {'lines':'0'}
+        self._body.clear()
+        self._body_lines = 0
+
     def set_type(self, mtype: str):
         self._type = Message.MCMDS[mtype]
         
@@ -62,11 +69,10 @@ class Message(object):
         value.append(parameters)
         if len(self._body) > 0:
             value += self._body
-        return Message.CRLF.join(value)
+        return '{}{}'.format(Message.CRLF.join(value), Message.CRLF)
     
     def unmarshal(self, value: str):
-        self._parameters.clear()
-        self._body.clear()
+        self.clear()
         lines = value.split(Message.CRLF)
         self._type = Message.MCMDS[lines[0]]
         parameters = lines[1].split(Message.PJOIN)
@@ -75,6 +81,3 @@ class Message(object):
             self._parameters[k] = v
         self._body += lines[2:]
         self._body_lines = int(self._parameters['lines'])
-            
-        
-        
