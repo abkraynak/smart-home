@@ -85,7 +85,7 @@ class SHServer(object):
     
     def _alarms_menu(self):
         try:
-            menu = ['0 - Logout', '1 - Get status', '2 - Enable', '3 - Disable', '4 - Change PIN']
+            menu = ['0 - Main Menu', '1 - Get status', '2 - Enable', '3 - Disable', '4 - Change PIN']
             options = {'1': '/status', '2': '/toggle', '3': '/toggle', '4': '/change_pin'}
             m_send = Message()
             m_send.set_type('MENU')
@@ -97,7 +97,7 @@ class SHServer(object):
             choice = m_recv.get_parameter('choice')
 
             if choice == '0':
-                self._menu_path = '/main/logout'
+                self._menu_path = '/main'
             elif choice in options:
                 self._menu_path += options[choice]
             else:
@@ -123,9 +123,9 @@ class SHServer(object):
 
     def _alarm_toggle(self):
         count = 0
-        alarm_pin = False
+        match = False
         try:
-            while not alarm_pin:
+            while not match:
                 m_send = Message()
                 m_send.set_type('MENU')
                 m_send.add_parameter('label', 'pin')
@@ -141,7 +141,8 @@ class SHServer(object):
                         raise Exception('Too many PIN entry attempts')
 
                 if int(pin) == self._home._alarm.get_pin():
-                    alarm_pin = True
+                    match = True
+                    self._home._alarm.toggle(int(pin))
                     self._alarm_status()
 
 
@@ -152,6 +153,63 @@ class SHServer(object):
         else:
             return
 
+    def _alarm_change_pin(self):
+        count = 0
+        current_match = False
+        try:
+            while not current_match:
+                # Enter current PIN
+                m_send = Message()
+                m_send.set_type('MENU')
+                m_send.add_parameter('label', 'pin0')
+                m_send.add_line('Enter current PIN : ')
+                self._shp.put_message(m_send)
+
+                m_recv = self._shp.get_message()
+                pin0 = m_recv.get_parameter('pin0')
+
+                count += 1
+                if count > 2:
+                        raise Exception('Too many PIN entry attempts')
+
+                # Verify current PIN is correct
+                if int(pin0) == self._home._alarm.get_pin():
+                    current_match = True
+        
+        except Exception as e:
+            print('_alarm_change_pin():', e)
+            self.shutdown()
+
+        else:
+            # Ask for new PIN
+            m_send.clear()
+            m_send.set_type('MENU')
+            m_send.add_parameter('label', 'pin1')
+            m_send.add_line('Enter new PIN : ')
+            self._shp.put_message(m_send)
+
+            m_recv = self._shp.get_message()
+            pin1 = m_recv.get_parameter('pin1')
+
+            # Ask for new PIN (again)
+            m_send.clear()
+            m_send.set_type('MENU')
+            m_send.add_parameter('label', 'pin2')
+            m_send.add_line('Enter new PIN (again) : ')
+            self._shp.put_message(m_send)
+
+            m_recv = self._shp.get_message()
+            pin2 = m_recv.get_parameter('pin2')
+
+            # Verify match
+            if pin1 == pin2:
+                self._home._alarm.set_pin(int(pin1))
+                m_send.clear()
+                m_send.set_type('DISPLAY')
+                m_send.add_line('PIN successfully changed!')
+                self._shp.put_message(m_send)
+                self._menu_path = '/main/alarms'
+    
     def run(self):
         # Receive the start message from client
         m_recv = self._shp.get_message()
@@ -164,7 +222,8 @@ class SHServer(object):
                       '/main/logout': self.shutdown,
                       '/main/alarms': self._alarms_menu,
                       '/main/alarms/status': self._alarm_status,
-                      '/main/alarms/toggle': self._alarm_toggle
+                      '/main/alarms/toggle': self._alarm_toggle,
+                      '/main/alarms/change_pin': self._alarm_change_pin
                       }
 
         while self._loggedin:

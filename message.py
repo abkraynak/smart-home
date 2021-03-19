@@ -41,7 +41,7 @@ class Message(object):
         self._type = Message.MCMDS[mtype]
         
     def get_type(self) -> str:
-        return self._type.value()
+        return self._type
 
     def add_parameter(self, name: str, value: str):
         self._parameters[name] = value

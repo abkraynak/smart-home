@@ -9,22 +9,22 @@ print(h0._alarm.get_pin())
 h0._alarm.set_pin(1234)
 print(h0._alarm.get_pin())
 
-h0._alarm.enable(4321)
+h0._alarm.toggle(4321)
 status = h0._alarm.get_status()
 print(status)
 
-h0._alarm.enable(1234)
+h0._alarm.toggle(1234)
 status = h0._alarm.get_status()
 print(status)
 
-h0._alarm.enable(1234)
+h0._alarm.toggle(1234)
 status = h0._alarm.get_status()
 print(status)
 
-h0._alarm.disable(4321)
+h0._alarm.toggle(4321)
 status = h0._alarm.get_status()
 print(status)
 
-h0._alarm.disable(1234)
+h0._alarm.toggle(1234)
 status = h0._alarm.get_status()
 print(status)

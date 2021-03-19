@@ -10,7 +10,7 @@ class Home(object):
         self._password = 'mypassword'
         self._first_name = first_name
         self._address = address
-        self._alarm = Alarm(0)
+        self._alarm = Alarm(1234)
         self._lights = []
         self._locks = []
 
