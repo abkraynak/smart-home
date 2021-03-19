@@ -216,7 +216,10 @@ class SHServer(object):
 
         self._login()
         if self._loggedin:
-            print('Welcome, ', self._home._first_name)
+            m_send = Message()
+            m_send.set_type('DISPLAY')
+            m_send.add_line('Welcome, ' + self._home._first_name)
+            self._shp.put_message(m_send)
 
         menu_pages = {'/main': self._main_menu,
                       '/main/logout': self.shutdown,
