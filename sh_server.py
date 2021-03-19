@@ -319,6 +319,52 @@ class SHServer(object):
         else:
             return
 
+    def _get_lock_name(self):
+        menu = ['[0] Main Menu']
+        num_locks = 1
+        for lock in self._home._locks:
+            menu.append('[' + str(num_locks) + '] ' + lock._name)
+            num_locks += 1
+        
+        m_send = Message()
+        m_send.set_type('MENU')
+        m_send.add_parameter('label', 'lock')
+        m_send.add_lines(menu)
+        self._shp.put_message(m_send)
+
+        m_recv = self._shp.get_message()
+        lock = int(m_recv.get_parameter('lock'))
+        return lock, num_locks
+    
+    def _locks_menu(self):
+        try:
+            lock, i = self._get_lock_name()
+            if lock == 0:
+                self._menu_path = '/main'
+            elif lock <= i:
+                # Find what the next choice
+                menu = ['[0] Main Menu', '[1] Get status', '[2] Lock', '[3] Unlock', '[4] Manage PINs']
+                
+                m_send = Message()
+                m_send.set_type('MENU')
+                m_send.add_parameter('label', 'choice')
+                m_send.add_lines(menu)
+                self._shp.put_message(m_send)
+
+                m_recv = self._shp.get_message()
+                choice = m_recv.get_parameter('choice')
+
+            else:
+                self._menu_path = '/main'
+
+        except Exception as e:
+            print('_lights_menu():', e)
+            self.shutdown()
+
+        else:
+            return
+
+    
     def welcome_message(self):
         m_send = Message()
         m_send.set_type('DISPLAY')
@@ -339,8 +385,8 @@ class SHServer(object):
                       '/main/alarms/status': self._alarm_status,
                       '/main/alarms/toggle': self._alarm_toggle,
                       '/main/alarms/change_pin': self._alarm_change_pin,
-                      '/main/lights': self._lights_menu
-                      }
+                      '/main/lights': self._lights_menu,
+                      '/main/locks': self._locks_menu }
 
         while self._loggedin:
             print(self._menu_path)
