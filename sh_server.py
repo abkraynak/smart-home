@@ -283,6 +283,11 @@ class SHServer(object):
                     brightness = int(m_recv.get_parameter('brightness'))
                     self._home._lights[room - 1].set_brightness(brightness)
 
+                    m_send.clear()
+                    m_send.set_type('DISPLAY')
+                    m_send.add_line('Brightness successfully changed!')
+                    self._shp.put_message(m_send)
+
                 elif choice == '5':
                     # Adjust color
                     print(self._home._lights[room - 1]._name)
