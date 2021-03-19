@@ -8,7 +8,7 @@ class Message(object):
     '''
     # Constants
     MCMDS = Enum('MCMDS', {'START': 'START', 'USER': 'USER','PASS': 'PASS',
-                           'MENU': 'MENU', 'CHOICE': 'CHOICE', 'ERROR': 'ERROR'})
+                           'MENU': 'MENU', 'DISPLAY': 'DISPLAY', 'CHOICE': 'CHOICE', 'ERROR': 'ERROR'})
     CRLF = '\r\n'
     SPACE = ' '
     PJOIN = '&'

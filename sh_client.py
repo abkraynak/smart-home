@@ -19,6 +19,9 @@ class SHClient(object):
                 m_recv = self._shp.get_message()
                 print(m_recv.get_body())
 
+                if m_recv.get_type() == 'DISPLAY':
+                    continue
+
                 # Send message to server
                 user_input = input('>> ')
                 m_send.clear()

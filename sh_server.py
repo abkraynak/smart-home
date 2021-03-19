@@ -85,8 +85,8 @@ class SHServer(object):
     
     def _alarms_menu(self):
         try:
-            menu = ['0 - Logout', '1 - Get status', '2 - Enable', '3 - Disable']
-            options = {'1': '/status', '2': '/enable', '3': '/disable'}
+            menu = ['0 - Logout', '1 - Get status', '2 - Enable', '3 - Disable', '4 - Change PIN']
+            options = {'1': '/status', '2': '/toggle', '3': '/toggle', '4': '/change_pin'}
             m_send = Message()
             m_send.set_type('MENU')
             m_send.add_parameter('label', 'choice')
@@ -109,10 +109,49 @@ class SHServer(object):
         else:
             return
     
-    def _alarms_status(self):
+    def _alarm_status(self):
+        m_send = Message()
+        m_send.set_type('DISPLAY')
+
         if self._home._alarm.get_status():
-            
-    
+            m_send.add_line('Alarm is ENABLED')
+        else:
+            m_send.add_line('Alarm is DISABLED')
+
+        self._shp.put_message(m_send)
+        self._menu_path = '/main/alarms'
+
+    def _alarm_toggle(self):
+        count = 0
+        alarm_pin = False
+        try:
+            while not alarm_pin:
+                m_send = Message()
+                m_send.set_type('MENU')
+                m_send.add_parameter('label', 'pin')
+                m_send.add_line('Enter your PIN : ')
+
+                self._shp.put_message(m_send)
+
+                m_recv = self._shp.get_message()
+                pin = m_recv.get_parameter('pin')
+                
+                count += 1
+                if count > 2:
+                        raise Exception('Too many PIN entry attempts')
+
+                if int(pin) == self._home._alarm.get_pin():
+                    alarm_pin = True
+                    self._alarm_status()
+
+
+        except Exception as e:
+            print('_alarm_toggle():', e)
+            self.shutdown()
+
+        else:
+            return
+
     def run(self):
         # Receive the start message from client
         m_recv = self._shp.get_message()
@@ -124,9 +163,9 @@ class SHServer(object):
         menu_pages = {'/main': self._main_menu,
                       '/main/logout': self.shutdown,
                       '/main/alarms': self._alarms_menu,
-                      '/main/alarms/status': self._alarms_status
-                      '/main/alarrms/enable': 
-                      '/main/alarms/disable': }
+                      '/main/alarms/status': self._alarm_status,
+                      '/main/alarms/toggle': self._alarm_toggle
+                      }
 
         while self._loggedin:
             print(self._menu_path)
