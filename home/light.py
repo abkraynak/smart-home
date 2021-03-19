@@ -33,6 +33,13 @@ class Light:
     def get_status(self) -> bool:
         return self._status
 
+    def toggle(self):
+        self._status = not self._status
+        if self._status:
+            self._brightness = 100
+        else:
+            self._brightness = 0
+    
     def enable(self):
         if self._status == True:
             print('light already on')

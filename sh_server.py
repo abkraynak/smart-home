@@ -210,6 +210,17 @@ class SHServer(object):
                 self._shp.put_message(m_send)
                 self._menu_path = '/main/alarms'
     
+    def _light_status(self, room: int):
+        m_send = Message()
+        m_send.set_type('DISPLAY')
+
+        if self._home._lights[room]._status:
+            m_send.add_line(self._home._lights[room]._name + ' light is ENABLED')
+        else:
+            m_send.add_line(self._home._lights[room]._name + ' light is DISABLED')
+        
+        self._shp.put_message(m_send)
+    
     def _lights_menu(self):
         try:
             menu = ['0 - Main Menu']
@@ -247,21 +258,13 @@ class SHServer(object):
                 
                 elif choice == '1':
                     # Status
-                    m_send = Message()
-                    m_send.set_type('DISPLAY')
-                    m_send.add_lines(menu)
-
-                    if self._home._lights[room - 1]._status:
-                        m_send.add_line(self._home._lights[room - 1]._name + ' light is ENABLED')
-                    else:
-                        m_send.add_line(self._home._lights[room - 1]._name + ' light is DISABLED')
-                    
-                    self._shp.put_message(m_send)
+                    self._light_status(room - 1)
                     self._menu_path = '/main/lights'
 
                 elif choice == '2' or choice == '3':
                     # Toggle
-                    print(self._home._lights[room - 1]._name)
+                    self._home._lights[room - 1].toggle()
+                    self._light_status(room - 1)
 
                 elif choice == '4':
                     # Adjust brightness
