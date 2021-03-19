@@ -59,7 +59,7 @@ class SHServer(object):
     
     def _main_menu(self):
         try:
-            menu = ['0 - Logout', '1 - Alarms', '2 - Lights', '3 - Locks']
+            menu = ['[0] Logout', '[1] Alarms', '[2] Lights', '[3] Locks']
             options = {'1': '/alarms', '2': '/lights', '3': '/locks'}
             m_send = Message()
             m_send.set_type('MENU')
@@ -85,7 +85,7 @@ class SHServer(object):
     
     def _alarms_menu(self):
         try:
-            menu = ['0 - Main Menu', '1 - Get status', '2 - Enable', '3 - Disable', '4 - Change PIN']
+            menu = ['[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Change PIN']
             options = {'1': '/status', '2': '/toggle', '3': '/toggle', '4': '/change_pin'}
             m_send = Message()
             m_send.set_type('MENU')
@@ -225,10 +225,10 @@ class SHServer(object):
         self._shp.put_message(m_send)
     
     def _get_lights_room(self) -> int:
-        menu = ['0 - Main Menu']
+        menu = ['[0] Main Menu']
         num_lights = 1
         for light in self._home._lights:
-            menu.append(str(num_lights) + ' - ' + light._name)
+            menu.append('[' + str(num_lights) + '] ' + light._name)
             num_lights += 1
         m_send = Message()
         m_send.set_type('MENU')
@@ -247,7 +247,7 @@ class SHServer(object):
                 self._menu_path = '/main'
             elif room <= i:
                 # Find what the next choice
-                menu = ['0 - Main Menu', '1 - Get status', '2 - Enable', '3 - Disable', '4 - Adjust brightness', '5 - Adjust color']
+                menu = ['[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Adjust brightness', '[5] Adjust color']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
