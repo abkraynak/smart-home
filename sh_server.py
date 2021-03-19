@@ -290,7 +290,21 @@ class SHServer(object):
 
                 elif choice == '5':
                     # Adjust color
-                    print(self._home._lights[room - 1]._name)
+                    m_send = Message()
+                    m_send.set_type('MENU')
+                    m_send.add_parameter('label', 'rgb')
+                    m_send.add_line('Enter desired RGB values (0 to 255) : ')
+                    self._shp.put_message(m_send)
+
+                    m_recv = self._shp.get_message()
+                    rgb = m_recv.get_parameter('rgb')
+                    r, g, b = rgb.split()
+                    self._home._lights[room - 1].set_color(int(r), int(g), int(b))
+                    
+                    m_send.clear()
+                    m_send.set_type('DISPLAY')
+                    m_send.add_line('Color successfully changed!')
+                    self._shp.put_message(m_send)
 
                 else:
                     self._menu_path = '/main'
