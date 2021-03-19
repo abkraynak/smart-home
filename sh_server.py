@@ -217,7 +217,7 @@ class SHServer(object):
         if self._home._lights[room]._status:
             m_send.add_line(self._home._lights[room]._name + ' light is ENABLED')
             m_send.add_line('Brightness level is ' + str(self._home._lights[room]._brightness) + '%')
-            m_send.add_line('Color is R=' + str(self._home._lights[room]._color['R']) + ', G= ' + str(self._home._lights[room]._color['G']) + ', B= ' + str(self._home._lights[room]._color['B']))
+            m_send.add_line('Color is R=' + str(self._home._lights[room]._color['R']) + ', G=' + str(self._home._lights[room]._color['G']) + ', B=' + str(self._home._lights[room]._color['B']))
         else:
             m_send.add_line(self._home._lights[room]._name + ' light is DISABLED')
         
