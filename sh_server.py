@@ -221,23 +221,25 @@ class SHServer(object):
         
         self._shp.put_message(m_send)
     
+    def _get_lights_room(self) -> int:
+        menu = ['0 - Main Menu']
+        num_lights = 1
+        for light in self._home._lights:
+            menu.append(str(num_lights) + ' - ' + light._name)
+            num_lights += 1
+        m_send = Message()
+        m_send.set_type('MENU')
+        m_send.add_parameter('label', 'room')
+        m_send.add_lines(menu)
+        self._shp.put_message(m_send)
+
+        m_recv = self._shp.get_message()
+        room = int(m_recv.get_parameter('room'))
+        return room, num_lights
+    
     def _lights_menu(self):
         try:
-            menu = ['0 - Main Menu']
-            i = 1
-            for light in self._home._lights:
-                menu.append(str(i) + ' - ' + light._name)
-                i += 1
-
-            m_send = Message()
-            m_send.set_type('MENU')
-            m_send.add_parameter('label', 'room')
-            m_send.add_lines(menu)
-            self._shp.put_message(m_send)
-
-            m_recv = self._shp.get_message()
-            room = int(m_recv.get_parameter('room'))
-
+            room, i = self._get_lights_room()
             if room == 0:
                 self._menu_path = '/main'
             elif room <= i:
