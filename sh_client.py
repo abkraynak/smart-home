@@ -20,11 +20,11 @@ class SHClient(object):
                 print(m_recv.get_body())
 
                 # Send message to server
-                username = input('>> ')
+                user_input = input('>> ')
                 m_send.clear()
                 m_send.set_type('CHOICE')
-                m_send.add_parameter(m_recv.get_parameter('1'), username)
+                m_send.add_parameter(m_recv.get_parameter('label'), user_input)
                 self._shp.put_message(m_send)
-                
+
         except Exception:
             self._shp.close()
