@@ -7,68 +7,55 @@ from home import Home
 class SHServer(object):
     def __init__(self, s: SHProtocol):
         self._shp = s
-        self._login = False
+        self._loggedin = False
         self._home = Home('Andrew', 'SW 12th St')
         self._home.sample_home()
         
     def _login(self):
-        # First message sent is username request
-        m_send = Message()
-        m_send.set_type('USER')
-        m_send.add_parameter('user', 'none')
-        m_send.add_line('Enter username:')
-        self._shp.put_message(m_send)
+        count = 0
+        try:
+            while not self._loggedin:
+                m_send = Message()
 
-        # Receive username from client
-        m_recv = self._shp.get_message()
-        username = m_recv.get_parameter('user')
+                # First message sent is username request
+                m_send.clear()
+                m_send.set_type('USER')
+                m_send.add_parameter('1', 'user')
+                m_send.add_line('Enter username:')
+                self._shp.put_message(m_send)
 
-        # Send password request
-        m_send.clear()
-        m_send.set_type('PASS')
-        m_send.add_parameter('pass', 'none')
-        m_send.add_line('Enter password: ')
-        self._shp.put_message(m_send)
+                # Receive username from client
+                m_recv = self._shp.get_message()
+                username = m_recv.get_parameter('user')
 
-        # Receive password from client
-        m_recv = self._shp.get_message()
-        password = m_recv.get_parameter('pass')
+                # Send password request
+                m_send.clear()
+                m_send.set_type('PASS')
+                m_send.add_parameter('1', 'pass')
+                m_send.add_line('Enter password: ')
+                self._shp.put_message(m_send)
 
-        print(username)
-        print(password)
+                # Receive password from client
+                m_recv = self._shp.get_message()
+                password = m_recv.get_parameter('pass')
+
+                self._loggedin = self._home.authenticate(username, password)
+                count += 1
+                if count > 2:
+                    raise Exception('Too many login attempts')
+                print(self._loggedin)
+                
+        except Exception as e:
+            print('login():', e)
+
+        else:
+            return
     
     def run(self):
         # Receive the start message from client
         m_recv = self._shp.get_message()
-        m_send = Message()
 
-        while not self._login:
-            # First message sent is username request
-            m_send.clear()
-            m_send.set_type('USER')
-            m_send.add_parameter('1', 'user')
-            m_send.add_line('Enter username:')
-            self._shp.put_message(m_send)
-
-            # Receive username from client
-            m_recv = self._shp.get_message()
-            username = m_recv.get_parameter('user')
-
-            # Send password request
-            m_send.clear()
-            m_send.set_type('PASS')
-            m_send.add_parameter('1', 'pass')
-            m_send.add_line('Enter password: ')
-            self._shp.put_message(m_send)
-
-            # Receive password from client
-            m_recv = self._shp.get_message()
-            password = m_recv.get_parameter('pass')
-
-            self._login = self._home.authenticate(username, password)
-            print(self._login)
-
-        print('outside loop')
+        self._login()
 
 
 
