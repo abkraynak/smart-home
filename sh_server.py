@@ -289,16 +289,19 @@ class SHServer(object):
         else:
             return
 
+    def welcome_message(self):
+        m_send = Message()
+        m_send.set_type('DISPLAY')
+        m_send.add_line('Welcome, ' + self._home._first_name)
+        self._shp.put_message(m_send)
+    
     def run(self):
         # Receive the start message from client
         m_recv = self._shp.get_message()
 
         self._login()
         if self._loggedin:
-            m_send = Message()
-            m_send.set_type('DISPLAY')
-            m_send.add_line('Welcome, ' + self._home._first_name)
-            self._shp.put_message(m_send)
+            self.welcome_message()
 
         menu_pages = {'/main': self._main_menu,
                       '/main/logout': self.shutdown,
@@ -313,6 +316,3 @@ class SHServer(object):
             print(self._menu_path)
             f = menu_pages[self._menu_path]
             f()
-
-
-        
