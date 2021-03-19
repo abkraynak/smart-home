@@ -231,7 +231,7 @@ class SHServer(object):
                 self._menu_path = '/main'
             elif room <= i:
                 # Find what the next choice
-                menu = ['0 - Main Menu', '1 - Turn off/on', '2 - Adjust brightness', '3 - Adjust color']
+                menu = ['0 - Main Menu', '1 - Get status', '2 - Enable/disable', '3 - Adjust brightness', '4 - Adjust color']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
@@ -246,15 +246,29 @@ class SHServer(object):
                     self._menu_path = '/main'
                 
                 elif choice == '1':
-                    print(self._home._lights[room - 1]._name)
+                    # Status
+                    m_send = Message()
+                    m_send.set_type('DISPLAY')
+                    m_send.add_lines(menu)
+
+                    if self._home._lights[room - 1]._status:
+                        m_send.add_line(self._home._lights[room - 1]._name + ' light is ENABLED')
+                    else:
+                        m_send.add_line(self._home._lights[room - 1]._name + ' light is DISABLED')
+                    
+                    self._shp.put_message(m_send)
+                    self._menu_path = '/main/lights'
 
                 elif choice == '2':
+                    # Toggle
                     print(self._home._lights[room - 1]._name)
 
                 elif choice == '3':
+                    # Adjust brightness
                     print(self._home._lights[room - 1]._name)
 
                 elif choice == '4':
+                    # Adjust color
                     print(self._home._lights[room - 1]._name)
 
                 else:
