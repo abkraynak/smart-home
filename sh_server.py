@@ -210,6 +210,39 @@ class SHServer(object):
                 self._shp.put_message(m_send)
                 self._menu_path = '/main/alarms'
     
+    def _lights_menu(self):
+        try:
+            menu = ['0 - Main Menu']
+            i = 1
+            for light in self._home._lights:
+                menu.append(str(i) + ' - ' + light._name)
+                i += 1
+
+            print(menu)
+            options = {'1': '/status', '2': '/toggle', '3': '/toggle', '4': '/change_pin'}
+            m_send = Message()
+            m_send.set_type('MENU')
+            m_send.add_parameter('label', 'choice')
+            m_send.add_lines(menu)
+            self._shp.put_message(m_send)
+
+            m_recv = self._shp.get_message()
+            choice = m_recv.get_parameter('choice')
+
+            if choice == '0':
+                self._menu_path = '/main'
+            elif choice in options:
+                self._menu_path += options[choice]
+            else:
+                self._menu_path = '/main'
+
+        except Exception as e:
+            print('_lights_menu():', e)
+            self.shutdown()
+
+        else:
+            return
+
     def run(self):
         # Receive the start message from client
         m_recv = self._shp.get_message()
@@ -226,7 +259,8 @@ class SHServer(object):
                       '/main/alarms': self._alarms_menu,
                       '/main/alarms/status': self._alarm_status,
                       '/main/alarms/toggle': self._alarm_toggle,
-                      '/main/alarms/change_pin': self._alarm_change_pin
+                      '/main/alarms/change_pin': self._alarm_change_pin,
+                      '/main/lights': self._lights_menu
                       }
 
         while self._loggedin:
