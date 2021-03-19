@@ -221,7 +221,6 @@ class SHServer(object):
         else:
             m_send.add_line(self._home._lights[room]._name + ' light is DISABLED')
         
-
         self._shp.put_message(m_send)
     
     def _get_lights_room(self) -> int:
@@ -336,6 +335,17 @@ class SHServer(object):
         lock = int(m_recv.get_parameter('lock'))
         return lock, num_locks
     
+    def _get_lock_status(self, lock: int):
+        m_send = Message()
+        m_send.set_type('DISPLAY')
+
+        if self._home._locks[lock]._enable:
+            m_send.add_line(self._home._locks[lock]._name + ' lock is LOCKED')
+        else:
+            m_send.add_line(self._home._locks[lock]._name + ' lock is UNLOCKED')
+
+        self._shp.put_message(m_send)
+    
     def _locks_menu(self):
         try:
             lock, i = self._get_lock_name()
@@ -354,11 +364,31 @@ class SHServer(object):
                 m_recv = self._shp.get_message()
                 choice = m_recv.get_parameter('choice')
 
+                if choice == '0':
+                    self._menu_path = '/main'
+                elif choice == '1':
+                    # Status
+                    self._get_lock_status(lock - 1)
+                    self._menu_path = '/main/locks'
+
+                elif choice == '2' or choice == '3':
+                    # Toggle
+                    self._get_lock_status(lock - 1)
+                    self._menu_path = '/main/locks'
+
+                elif choice == '4':
+                    # Manage PINs
+                    self._get_lock_status(lock - 1)
+                    self._menu_path = '/main/locks'
+
+                else:
+                    self._menu_path = '/main'
+
             else:
                 self._menu_path = '/main'
 
         except Exception as e:
-            print('_lights_menu():', e)
+            print('_locks_menu():', e)
             self.shutdown()
 
         else:
