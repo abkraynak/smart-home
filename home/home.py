@@ -8,7 +8,7 @@ class Home(object):
     def __init__(self, first_name: str, address: str):
         self._username = 'abkraynak'
         self._password = 'mypassword'
-        self._firstName = first_name
+        self._first_name = first_name
         self._address = address
         self._alarm = Alarm(0)
         self._lights = []

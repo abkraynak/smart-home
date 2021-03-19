@@ -25,5 +25,6 @@ class SHClient(object):
                 m_send.set_type('CHOICE')
                 m_send.add_parameter(m_recv.get_parameter('1'), username)
                 self._shp.put_message(m_send)
+                
         except Exception:
             self._shp.close()

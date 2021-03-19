@@ -8,6 +8,7 @@ class SHServer(object):
     def __init__(self, s: SHProtocol):
         self._shp = s
         self._loggedin = False
+        self._menu_level = 'main'
         self._home = Home('Andrew', 'SW 12th St')
         self._home.sample_home()
         
@@ -43,8 +44,7 @@ class SHServer(object):
                 count += 1
                 if count > 2:
                     raise Exception('Too many login attempts')
-                print(self._loggedin)
-                
+
         except Exception as e:
             print('login():', e)
 
@@ -56,10 +56,4 @@ class SHServer(object):
         m_recv = self._shp.get_message()
 
         self._login()
-
-
-
-
-
-
-
+        print('Welcome, ', self._home._first_name)
