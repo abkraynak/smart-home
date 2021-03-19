@@ -12,6 +12,11 @@ class SHServer(object):
         self._home = Home('Andrew', 'SW 12th St')
         self._home.sample_home()
         
+    def shutdown(self):
+        self._loggedin = False 
+        self._shp.close()
+        return
+
     def _login(self):
         count = 0
         try:
@@ -47,13 +52,39 @@ class SHServer(object):
 
         except Exception as e:
             print('login():', e)
+            self.shutdown()
 
         else:
             return
     
+    def _main_menu(self):
+        try:
+            menu = []
+            option = {}
+            m_send = Message()
+            m_send.set_type('MENU')
+            m_send.add_parameter('1', 'choice')
+            m_send.add_lines(menu)
+            self._shp.put_message(m_send)
+
+
+
+        except Exception:
+            self.shutdown()
+
+        else:
+            return
+
     def run(self):
         # Receive the start message from client
         m_recv = self._shp.get_message()
 
         self._login()
-        print('Welcome, ', self._home._first_name)
+        if self._loggedin:
+            print('Welcome, ', self._home._first_name)
+        while self._loggedin:
+            self._main_menu()
+
+        self.shutdown()
+
+        
