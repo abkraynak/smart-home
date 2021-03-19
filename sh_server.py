@@ -4,7 +4,11 @@ from message import Message
 from sh_protocol import SHProtocol
 from home import Home
 
+message_break = '-----------------------------'
+
 class SHServer(object):
+    
+
     def __init__(self, s: SHProtocol):
         self._shp = s
         self._loggedin = False
@@ -38,6 +42,7 @@ class SHServer(object):
                 m_send.clear()
                 m_send.set_type('PASS')
                 m_send.add_parameter('label', 'pass')
+                m_send.add_line(message_break)
                 m_send.add_line('Enter password: ')
                 self._shp.put_message(m_send)
 
@@ -59,7 +64,7 @@ class SHServer(object):
     
     def _main_menu(self):
         try:
-            menu = ['[0] Logout', '[1] Alarms', '[2] Lights', '[3] Locks']
+            menu = [message_break, '[0] Logout', '[1] Alarms', '[2] Lights', '[3] Locks']
             options = {'1': '/alarms', '2': '/lights', '3': '/locks'}
             m_send = Message()
             m_send.set_type('MENU')
@@ -85,7 +90,7 @@ class SHServer(object):
     
     def _alarms_menu(self):
         try:
-            menu = ['[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Change PIN']
+            menu = [message_break, '[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Change PIN']
             options = {'1': '/status', '2': '/toggle', '3': '/toggle', '4': '/change_pin'}
             m_send = Message()
             m_send.set_type('MENU')
@@ -224,7 +229,7 @@ class SHServer(object):
         self._shp.put_message(m_send)
     
     def _get_lights_room(self) -> int:
-        menu = ['[0] Main Menu']
+        menu = [message_break, '[0] Main Menu']
         num_lights = 1
         for light in self._home._lights:
             menu.append('[' + str(num_lights) + '] ' + light._name)
@@ -246,7 +251,7 @@ class SHServer(object):
                 self._menu_path = '/main'
             elif room <= i:
                 # Find what the next choice
-                menu = ['[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Adjust brightness', '[5] Adjust color']
+                menu = [message_break, '[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Adjust brightness', '[5] Adjust color']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
@@ -319,7 +324,7 @@ class SHServer(object):
             return
 
     def _get_lock_name(self):
-        menu = ['[0] Main Menu']
+        menu = [message_break, '[0] Main Menu']
         num_locks = 1
         for lock in self._home._locks:
             menu.append('[' + str(num_locks) + '] ' + lock._name)

@@ -33,7 +33,7 @@ class Home(object):
         self.add_lock('Front Door', 2345)
         self.add_lock('Garage Door', 5432)
         self.add_lock('Back Door', 2345)
-        self.add_loock('Side Door', 5432)
+        self.add_lock('Side Door', 5432)
     
     def add_light(self, name: str):
         new_light = Light(name)
