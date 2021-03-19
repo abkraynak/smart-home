@@ -373,18 +373,32 @@ class SHServer(object):
 
                 elif choice == '2' or choice == '3':
                     # Toggle
-                    m_send = Message()
-                    m_send.set_type('MENU')
-                    m_send.add_parameter('label', 'pin')
-                    m_send.add_line('Enter your PIN : ')
-                    self._shp.put_message(m_send)
+                    count = 0
+                    match = False
+                    
+                    try:
+                        while not match:
+                            m_send = Message()
+                            m_send.set_type('MENU')
+                            m_send.add_parameter('label', 'pin')
+                            m_send.add_line('Enter your PIN : ')
+                            self._shp.put_message(m_send)
 
-                    m_recv = self._shp.get_message()
-                    pin = int(m_recv.get_parameter('pin'))
+                            m_recv = self._shp.get_message()
+                            pin = int(m_recv.get_parameter('pin'))
 
-                    self._home._locks[lock - 1].toggle(pin)
-                    self._get_lock_status(lock - 1)
-                    self._menu_path = '/main/locks'
+                            count += 1
+                            if count > 2:
+                                    raise Exception('Too many PIN entry attempts')
+
+                            if self._home._locks[lock - 1].toggle(pin):
+                                match = True
+                                self._get_lock_status(lock - 1)
+                                self._menu_path = '/main/locks'
+
+                    except Exception as e:
+                        print('_locks_menu(): toggle: ', e)
+                        self.shutdown()
 
                 elif choice == '4':
                     # Manage PINs
