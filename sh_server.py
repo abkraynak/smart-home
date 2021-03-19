@@ -373,6 +373,16 @@ class SHServer(object):
 
                 elif choice == '2' or choice == '3':
                     # Toggle
+                    m_send = Message()
+                    m_send.set_type('MENU')
+                    m_send.add_parameter('label', 'pin')
+                    m_send.add_line('Enter your PIN : ')
+                    self._shp.put_message(m_send)
+
+                    m_recv = self._shp.get_message()
+                    pin = int(m_recv.get_parameter('pin'))
+
+                    self._home._locks[lock - 1].toggle(pin)
                     self._get_lock_status(lock - 1)
                     self._menu_path = '/main/locks'
 
