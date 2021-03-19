@@ -70,7 +70,7 @@ class SHServer(object):
             m_recv = self._shp.get_message()
             choice = m_recv.get_parameter('choice')
 
-            if choice == 0:
+            if choice == '0':
                 self._menu_path = '/main/logout'
             elif choice in options:
                 self._menu_path += options[choice]
