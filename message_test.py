@@ -9,6 +9,7 @@ if __name__ == '__main__':
     m1 = Message()
     print(m1)
     m1.set_type('MENU')
+    m1.add_parameter('1', 'username')
     m1.add_line('Main Menu')
     m1.add_line('1. Alarm')
     m1.add_line('2. Lights')

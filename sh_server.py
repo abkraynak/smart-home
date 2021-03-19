@@ -41,12 +41,12 @@ class SHServer(object):
         # Receive the start message from client
         m_recv = self._shp.get_message()
         m_send = Message()
-        
+
         while not self._login:
             # First message sent is username request
             m_send.clear()
             m_send.set_type('USER')
-            m_send.add_parameter('user', 'none')
+            m_send.add_parameter('1', 'user')
             m_send.add_line('Enter username:')
             self._shp.put_message(m_send)
 
@@ -57,14 +57,13 @@ class SHServer(object):
             # Send password request
             m_send.clear()
             m_send.set_type('PASS')
-            m_send.add_parameter('pass', 'none')
+            m_send.add_parameter('1', 'pass')
             m_send.add_line('Enter password: ')
             self._shp.put_message(m_send)
 
             # Receive password from client
             m_recv = self._shp.get_message()
             password = m_recv.get_parameter('pass')
-
 
             self._login = self._home.authenticate(username, password)
             print(self._login)
