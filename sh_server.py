@@ -231,7 +231,7 @@ class SHServer(object):
                 self._menu_path = '/main'
             elif room <= i:
                 # Find what the next choice
-                menu = ['0 - Main Menu', '1 - Get status', '2 - Enable/disable', '3 - Adjust brightness', '4 - Adjust color']
+                menu = ['0 - Main Menu', '1 - Get status', '2 - Enable', '3 - Disable', '4 - Adjust brightness', '5 - Adjust color']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
@@ -259,15 +259,15 @@ class SHServer(object):
                     self._shp.put_message(m_send)
                     self._menu_path = '/main/lights'
 
-                elif choice == '2':
+                elif choice == '2' or choice == '3':
                     # Toggle
                     print(self._home._lights[room - 1]._name)
 
-                elif choice == '3':
+                elif choice == '4':
                     # Adjust brightness
                     print(self._home._lights[room - 1]._name)
 
-                elif choice == '4':
+                elif choice == '5':
                     # Adjust color
                     print(self._home._lights[room - 1]._name)
 
