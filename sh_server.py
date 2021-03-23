@@ -229,8 +229,8 @@ class SHServer(object):
         self._shp.put_message(m_send)
     
     def _get_lights_room(self) -> int:
-        menu = [message_break, '[0] Main Menu']
-        num_lights = 1
+        menu = [message_break, '[0] Main Menu', '[1] Show all status', '[2] Enable all', '[3] Disable all', message_break]
+        diff = num_lights = 4
         for light in self._home._lights:
             menu.append('[' + str(num_lights) + '] ' + light._name)
             num_lights += 1
@@ -242,11 +242,11 @@ class SHServer(object):
 
         m_recv = self._shp.get_message()
         room = int(m_recv.get_parameter('room'))
-        return room, num_lights
+        return room, num_lights, diff
     
     def _lights_menu(self):
         try:
-            room, i = self._get_lights_room()
+            room, i, diff = self._get_lights_room()
             if room == 0:
                 self._menu_path = '/main'
             elif room <= i:
@@ -267,13 +267,13 @@ class SHServer(object):
                 
                 elif choice == '1':
                     # Status
-                    self._light_status(room - 1)
+                    self._light_status(room - diff)
                     self._menu_path = '/main/lights'
 
                 elif choice == '2' or choice == '3':
                     # Toggle
-                    self._home._lights[room - 1].toggle()
-                    self._light_status(room - 1)
+                    self._home._lights[room - diff].toggle()
+                    self._light_status(room - diff)
 
                 elif choice == '4':
                     # Adjust brightness
@@ -285,7 +285,7 @@ class SHServer(object):
 
                     m_recv = self._shp.get_message()
                     brightness = int(m_recv.get_parameter('brightness'))
-                    self._home._lights[room - 1].set_brightness(brightness)
+                    self._home._lights[room - diff].set_brightness(brightness)
 
                     m_send.clear()
                     m_send.set_type('DISPLAY')
@@ -303,7 +303,7 @@ class SHServer(object):
                     m_recv = self._shp.get_message()
                     rgb = m_recv.get_parameter('rgb')
                     r, g, b = rgb.split()
-                    self._home._lights[room - 1].set_color(int(r), int(g), int(b))
+                    self._home._lights[room - diff].set_color(int(r), int(g), int(b))
                     
                     m_send.clear()
                     m_send.set_type('DISPLAY')
@@ -448,6 +448,5 @@ class SHServer(object):
                       '/main/locks': self._locks_menu }
 
         while self._loggedin:
-            print(self._menu_path)
             f = menu_pages[self._menu_path]
             f()
