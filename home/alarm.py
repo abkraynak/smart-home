@@ -16,27 +16,14 @@ class Alarm:
 
     def toggle(self, pin: int):
         if pin == self.get_pin():
-           print('pins match')
            self._enable = not self._enable
-        else:
-            print('incorrect pin')
                 
     def enable(self, pin: int):
-        if self._enable == True:
-            print('alarm already on')
-        else:
+        if self._enable == False:
             if pin == self.get_pin():
-                print('pins match')
                 self._enable = True
-            else:
-                print('incorrect pin')
 
     def disable(self, pin: int):
-        if self._enable == False:
-            print('alarm already disabled')
-        else:
+        if self._enable == True:
             if pin == self.get_pin():
-                print('pins match')
                 self._enable = False
-            else:
-                print('incorrect pin')
