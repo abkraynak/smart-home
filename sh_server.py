@@ -450,8 +450,40 @@ class SHServer(object):
                         self.shutdown()
 
                 elif choice == '4':
-                    # Manage PINs
-                    self._get_lock_status(lock - diff)
+                    # Ask for new PIN
+                    m_send.clear()
+                    m_send.set_type('MENU')
+                    m_send.add_parameter('label', 'pin1')
+                    m_send.add_line('Enter new PIN : ')
+                    self._shp.put_message(m_send)
+
+                    m_recv = self._shp.get_message()
+                    pin1 = m_recv.get_parameter('pin1')
+
+                    # Ask for new PIN (again)
+                    m_send.clear()
+                    m_send.set_type('MENU')
+                    m_send.add_parameter('label', 'pin2')
+                    m_send.add_line('Enter new PIN (again) : ')
+                    self._shp.put_message(m_send)
+
+                    m_recv = self._shp.get_message()
+                    pin2 = m_recv.get_parameter('pin2')
+
+                    # Verify match
+                    if pin1 == pin2:
+                        self._home._locks[lock - diff].set_pin(int(pin1))
+                        m_send.clear()
+                        m_send.set_type('DISPLAY')
+                        m_send.add_line('PIN successfully changed!')
+                        self._shp.put_message(m_send)
+
+                    else:
+                        m_send.clear()
+                        m_send.set_type('DISPLAY')
+                        m_send.add_line('PIN successfully changed!')
+                        self._shp.put_message(m_send)
+
                     self._menu_path = '/main/locks'
 
                 else:
