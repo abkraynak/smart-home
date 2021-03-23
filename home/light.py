@@ -41,15 +41,11 @@ class Light:
             self._brightness = 0
     
     def enable(self):
-        if self._status == True:
-            print('light already on')
-        else:
+        if self._status == False:
             self._status = True
             self._brightness = 100
 
     def disable(self):
-        if self._status == False:
-            print('light already off')
-        else:
+        if self._status == True:
             self._status = False
             self._brightness = 0

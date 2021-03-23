@@ -263,10 +263,24 @@ class SHServer(object):
                 self._shp.put_message(m_send)
 
             elif room == 2: 
-                print('enable all')
+                m_send = Message()
+                m_send.set_type('DISPLAY')
+
+                for L in self._home._lights:
+                    L.enable()
+                    
+                m_send.add_line('All lights enabled!')
+                self._shp.put_message(m_send)
 
             elif room == 3:
-                print('disable all')
+                m_send = Message()
+                m_send.set_type('DISPLAY')
+
+                for L in self._home._lights:
+                    L.disable()
+                    
+                m_send.add_line('All lights disabled!')
+                self._shp.put_message(m_send)
 
             elif room <= i:
                 # Find what the next choice
