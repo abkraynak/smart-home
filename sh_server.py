@@ -402,7 +402,7 @@ class SHServer(object):
 
             elif lock <= i:
                 # Find what the next choice
-                menu = ['[0] Back', '[1] Get status', '[2] Lock', '[3] Unlock', '[4] Manage PINs']
+                menu = ['[0] Back', '[1] Get status', '[2] Lock', '[3] Unlock', '[4] Change PIN']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
@@ -450,41 +450,68 @@ class SHServer(object):
                         self.shutdown()
 
                 elif choice == '4':
-                    # Ask for new PIN
-                    m_send.clear()
-                    m_send.set_type('MENU')
-                    m_send.add_parameter('label', 'pin1')
-                    m_send.add_line('Enter new PIN : ')
-                    self._shp.put_message(m_send)
+                    count = 0
+                    match = False
+                    
+                    try:
+                        while not match:
+                            m_send = Message()
+                            m_send.set_type('MENU')
+                            m_send.add_parameter('label', 'pin')
+                            m_send.add_line('Enter your current PIN : ')
+                            self._shp.put_message(m_send)
 
-                    m_recv = self._shp.get_message()
-                    pin1 = m_recv.get_parameter('pin1')
+                            m_recv = self._shp.get_message()
+                            pin = int(m_recv.get_parameter('pin'))
 
-                    # Ask for new PIN (again)
-                    m_send.clear()
-                    m_send.set_type('MENU')
-                    m_send.add_parameter('label', 'pin2')
-                    m_send.add_line('Enter new PIN (again) : ')
-                    self._shp.put_message(m_send)
+                            count += 1
+                            if count > 2:
+                                    raise Exception('Too many PIN entry attempts')
 
-                    m_recv = self._shp.get_message()
-                    pin2 = m_recv.get_parameter('pin2')
+                            if self._home._locks[lock - diff].get_pin() == pin:
+                                match = True
 
-                    # Verify match
-                    if pin1 == pin2:
-                        self._home._locks[lock - diff].set_pin(int(pin1))
-                        m_send.clear()
-                        m_send.set_type('DISPLAY')
-                        m_send.add_line('PIN successfully changed!')
-                        self._shp.put_message(m_send)
+                    except Exception as e:
+                        print('_locks_menu(): toggle: ', e)
+                        self.shutdown()
 
                     else:
+                        # Ask for new PIN
                         m_send.clear()
-                        m_send.set_type('DISPLAY')
-                        m_send.add_line('PIN successfully changed!')
+                        m_send.set_type('MENU')
+                        m_send.add_parameter('label', 'pin1')
+                        m_send.add_line('Enter new PIN : ')
                         self._shp.put_message(m_send)
 
-                    self._menu_path = '/main/locks'
+                        m_recv = self._shp.get_message()
+                        pin1 = m_recv.get_parameter('pin1')
+
+                        # Ask for new PIN (again)
+                        m_send.clear()
+                        m_send.set_type('MENU')
+                        m_send.add_parameter('label', 'pin2')
+                        m_send.add_line('Enter new PIN (again) : ')
+                        self._shp.put_message(m_send)
+
+                        m_recv = self._shp.get_message()
+                        pin2 = m_recv.get_parameter('pin2')
+
+                        # Verify match
+                        if pin1 == pin2:
+                            self._home._locks[lock - diff].set_pin(int(pin1))
+                            m_send.clear()
+                            m_send.set_type('DISPLAY')
+                            m_send.add_line('PIN successfully changed!')
+                            self._shp.put_message(m_send)
+
+                        else:
+                            m_send.clear()
+                            m_send.set_type('DISPLAY')
+                            m_send.add_line('PINs do not match, please try again!')
+                            self._shp.put_message(m_send)
+                    
+                    finally:
+                        self._menu_path = '/main/locks'
 
                 else:
                     self._menu_path = '/main'
