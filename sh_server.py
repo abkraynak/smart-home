@@ -284,7 +284,7 @@ class SHServer(object):
 
             elif room <= i:
                 # Find what the next choice
-                menu = [message_break, '[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Adjust brightness', '[5] Adjust color']
+                menu = [message_break, '[0] Back', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Adjust brightness', '[5] Adjust color']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
@@ -296,7 +296,7 @@ class SHServer(object):
                 choice = m_recv.get_parameter('choice')
 
                 if choice == '0':
-                    self._menu_path = '/main'
+                    self._menu_path = '/main/lights'
                 
                 elif choice == '1':
                     # Status
@@ -357,8 +357,8 @@ class SHServer(object):
             return
 
     def _get_lock_name(self):
-        menu = [message_break, '[0] Main Menu']
-        num_locks = 1
+        menu = [message_break, '[0] Main Menu', '[1] Show all status', ' ', 'Or select a lock:']
+        diff = num_locks = 2
         for lock in self._home._locks:
             menu.append('[' + str(num_locks) + '] ' + lock._name)
             num_locks += 1
@@ -371,7 +371,7 @@ class SHServer(object):
 
         m_recv = self._shp.get_message()
         lock = int(m_recv.get_parameter('lock'))
-        return lock, num_locks
+        return lock, num_locks, diff
     
     def _get_lock_status(self, lock: int):
         m_send = Message()
@@ -386,12 +386,23 @@ class SHServer(object):
     
     def _locks_menu(self):
         try:
-            lock, i = self._get_lock_name()
+            lock, i, diff = self._get_lock_name()
             if lock == 0:
                 self._menu_path = '/main'
+            elif lock == 1:
+                m_send = Message()
+                m_send.set_type('DISPLAY')
+                for L in self._home._locks:
+                    if L._enable:
+                        m_send.add_line('- ' + L._name + ' is LOCKED')
+                    else:
+                        m_send.add_line('- ' + L._name + ' is UNLOCKED')
+                    
+                self._shp.put_message(m_send)
+
             elif lock <= i:
                 # Find what the next choice
-                menu = ['[0] Main Menu', '[1] Get status', '[2] Lock', '[3] Unlock', '[4] Manage PINs']
+                menu = ['[0] Back', '[1] Get status', '[2] Lock', '[3] Unlock', '[4] Manage PINs']
                 
                 m_send = Message()
                 m_send.set_type('MENU')
@@ -403,10 +414,10 @@ class SHServer(object):
                 choice = m_recv.get_parameter('choice')
 
                 if choice == '0':
-                    self._menu_path = '/main'
+                    self._menu_path = '/main/locks'
                 elif choice == '1':
                     # Status
-                    self._get_lock_status(lock - 1)
+                    self._get_lock_status(lock - diff)
                     self._menu_path = '/main/locks'
 
                 elif choice == '2' or choice == '3':
@@ -429,9 +440,9 @@ class SHServer(object):
                             if count > 2:
                                     raise Exception('Too many PIN entry attempts')
 
-                            if self._home._locks[lock - 1].toggle(pin):
+                            if self._home._locks[lock - diff].toggle(pin):
                                 match = True
-                                self._get_lock_status(lock - 1)
+                                self._get_lock_status(lock - diff)
                                 self._menu_path = '/main/locks'
 
                     except Exception as e:
@@ -440,7 +451,7 @@ class SHServer(object):
 
                 elif choice == '4':
                     # Manage PINs
-                    self._get_lock_status(lock - 1)
+                    self._get_lock_status(lock - diff)
                     self._menu_path = '/main/locks'
 
                 else:

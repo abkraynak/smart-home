@@ -5,7 +5,7 @@ from sh_protocol import SHProtocol
 from sh_client import SHClient
     
 HOST = "localhost"
-PORT = 50003
+PORT = 50005
 
 if __name__ == "__main__":
     # Create the socket

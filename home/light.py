@@ -4,7 +4,7 @@ class Light:
     def __init__(self, name: str):
         self._name = name
         self._status = False
-        self._color = {'R': 0, 'G': 0, 'B': 0}
+        self._color = {'R': 255, 'G': 255, 'B': 255}
         self._brightness = 0
 
     def get_name(self) -> str:
