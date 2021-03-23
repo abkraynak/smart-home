@@ -229,7 +229,7 @@ class SHServer(object):
         self._shp.put_message(m_send)
     
     def _get_lights_room(self) -> int:
-        menu = [message_break, '[0] Main Menu', '[1] Show all status', '[2] Enable all', '[3] Disable all', message_break]
+        menu = [message_break, '[0] Main Menu', '[1] Show all status', '[2] Enable all', '[3] Disable all', ' ', 'Or select a room:']
         diff = num_lights = 4
         for light in self._home._lights:
             menu.append('[' + str(num_lights) + '] ' + light._name)
@@ -249,6 +249,25 @@ class SHServer(object):
             room, i, diff = self._get_lights_room()
             if room == 0:
                 self._menu_path = '/main'
+            elif room == 1:
+                m_send = Message()
+                m_send.set_type('DISPLAY')
+                for L in self._home._lights:
+                    if L._status:
+                        m_send.add_line('- ' + L._name + ' light is ENABLED')
+                        m_send.add_line('    Brightness level is ' + str(L._brightness) + '%')
+                        m_send.add_line('    Color is R=' + str(L._color['R']) + ', G=' + str(L._color['G']) + ', B=' + str(L._color['B']))
+                    else:
+                        m_send.add_line('- ' + L._name + ' light is DISABLED')
+                    
+                self._shp.put_message(m_send)
+
+            elif room == 2: 
+                print('enable all')
+
+            elif room == 3:
+                print('disable all')
+
             elif room <= i:
                 # Find what the next choice
                 menu = [message_break, '[0] Main Menu', '[1] Get status', '[2] Enable', '[3] Disable', '[4] Adjust brightness', '[5] Adjust color']
