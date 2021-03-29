@@ -9,10 +9,10 @@ PORT = 50000
 
 if __name__ == "__main__":
     # Create the server socket
-    # Defaults family=AF_INET, type=SOCK_STREAM, proto=0, filno=None
+    # Defaults: family=AF_INET, type=SOCK_STREAM, proto=0, filno=None
     serversoc = socket.socket()
     
-    # Bind to local host:5000`
+    # Bind to local host:50000
     serversoc.bind((HOST, PORT))
                    
     # Make passive with backlog=5
@@ -30,7 +30,7 @@ if __name__ == "__main__":
         shs = SHServer(shp)
         shs.run()
         
-        # Close the comm socket
+        # Close the socket
         commsoc.close()
     
     # Close the server socket
