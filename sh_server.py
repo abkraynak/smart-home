@@ -7,8 +7,6 @@ from home import Home
 message_break = '-----------------------------'
 
 class SHServer(object):
-    
-
     def __init__(self, s: SHProtocol):
         self._shp = s
         self._loggedin = False
