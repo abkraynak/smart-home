@@ -12,7 +12,7 @@ The system supports three classes of devices:
 * Lights
 * Locks
 ### Alarm
-The alarm can be enabled or disabled by providing the PIN. The PIN can be changed by the homeowner.
+The alarm can be enabled or disabled by providing the PIN. The PIN can be changed by the homeowner. One home can only have one alarm.
 ### Lights
 Lights are grouped into rooms. The system can support an unlimited number of rooms of lights. In each room, the light can be turned on or off, dimmed, or set to any color desired. All lights can be turned on or off at once.
 ### Locks
